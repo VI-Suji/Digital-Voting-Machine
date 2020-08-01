@@ -118,6 +118,9 @@ public class admin extends javax.swing.JFrame {
             this.dispose();
 
         }
+        else{
+            new Error("Wrong Password",this);
+    }
     }//GEN-LAST:event_loginActionPerformed
 
     /**

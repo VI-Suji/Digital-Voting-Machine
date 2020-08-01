@@ -6,7 +6,7 @@
 package evm;
 /**
  *
- * @author Sjith & Thara
+ * @author Sjith & Taps
  */
 public class EVM {
 
@@ -15,8 +15,7 @@ public class EVM {
      */
     public static void main(String[] args)
     {
-        admin obj=new admin();
-        obj.setVisible(true);
+       new Error.welcome();
     }
     
 }

@@ -5,7 +5,7 @@
  */
 package Party;
 
-import evm.admin;
+import evm.admin_panel;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,7 +122,7 @@ public class AddParty extends javax.swing.JFrame {
     }//GEN-LAST:event_okActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
-        admin a = new admin();
+        admin_panel a = new admin_panel();
         a.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backActionPerformed

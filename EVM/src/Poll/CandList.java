@@ -1,75 +1,47 @@
 package Poll;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
-
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import Crypto.Decrypt;
 import Crypto.Encrypt;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Collections;
 import javax.crypto.BadPaddingException;
 
 /**
+ * A complete Java class to demonstrate the use of a JScrollPane.
+ * 
+ * @author robinhood
  *
- * @author tapan
  */
-class Trials extends javax.swing.JFrame 
-{       //public class
-    
+public class CandList extends javax.swing.JFrame 
+{
     public String constituency="tkm";
     private int c,size=0;
-    private StringBuffer sb;
+    public StringBuffer sb;
+    public String [] s;
     private String candidates[];
-    ArrayList<javax.swing.JButton> cand;    
-
-    public Trials() {
-        //initComponents();
-    }
-    public Trials(int cc,StringBuffer s){
-        /*this();
-        this.c=cc;
-        this.sb=s;
-        System.out.println("\n\n\tEnter your votessss(1-"+c+") :\n");
-        System.out.println(sb);*/
-    }                   
-    private void initComponents(String []sb)
-    {
-        cand= new ArrayList<javax.swing.JButton>();
-        for(String x:sb)
-        {
-            cand.add(new JButton(x));
-        }
+    public JTextArea textArea;
+    public JFrame frame;
+    ArrayList<javax.swing.JButton> cand; 
         
-        //str[10]="NOTA";
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        int i=0;
-        for(JButton j:cand)
-        {
-            j.addActionListener(new java.awt.event.ActionListener() 
-            {
-                public void actionPerformed(java.awt.event.ActionEvent evt) 
-                {
-                    candActionPerformed(evt);
-                }
-            });
-            j.setBounds(100,100+i,100,100);
-            i+=100;
-            add(j);
-        }
-        setVisible(true);
-        setSize(400, 400);
-        setLayout(null);
-    }      
     public static void shuffle(String filename) throws IOException{
 		ArrayList<String> str = new ArrayList<String>();
 		BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -133,16 +105,16 @@ class Trials extends javax.swing.JFrame
                     BadPaddingException e){
                 System.out.println("crypto error");
             }
-                this.dispose();
+                frame.dispose();
                 Vote v = new Vote();
                 v.setVisible(true);
             }
         }           
         
-    }                                      
-
-    public void trial(String constituency,String [] candidates,String sb) {
-
+    } 
+  public CandList(String constituency,String [] candidates,String sb)
+  {
+      
         try 
         {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) 
@@ -173,18 +145,64 @@ class Trials extends javax.swing.JFrame
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() 
+        this.constituency=constituency;
+        this.candidates=candidates;
+        //System.out.println(sb);
+        sb+="NOTA\n";
+        s=sb.split("\n");
+        
+        // create a jtextarea
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        JPanel layout = new JPanel(new GridBagLayout());
+        layout.setBorder(new EmptyBorder(0, 0, 0, 0));
+        JPanel btnPanel = new JPanel(new GridLayout(10, 1, 50, 30));
+        JTextArea textArea = new JTextArea();
+        JPanel jp=new JPanel();
+        cand= new ArrayList<javax.swing.JButton>();
+        for(String x:s)
         {
-            public void run() 
+            cand.add(new JButton(x));
+        }
+        
+        //str[10]="NOTA";
+        int i=0;
+        for(JButton j:cand)
+        {
+            j.addActionListener(new java.awt.event.ActionListener() 
             {
-                new Trials().setVisible(true);
-            }
-        });
-    this.constituency=constituency;
-    //System.out.println(sb);
-    sb=sb+"NOTA\n ";
-    //System.out.println(sb);
-    this.candidates=candidates;
-    initComponents(sb.split("\n"));
-    }
+                public void actionPerformed(java.awt.event.ActionEvent evt) 
+                {
+                    candActionPerformed(evt);
+                }
+            });
+            j.setBounds(100,100+i,100,100);
+            i+=100;
+            btnPanel.add(j);
+        }
+        layout.add(btnPanel);
+        // add text to it; we want to make it scroll
+        //textArea.setText("xx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\n");
+        
+        // create a scrollpane, givin it the textarea as a constructor argument
+        JScrollPane scrollPane = new JScrollPane(layout);
+
+        // now add the scrollpane to the jframe's content pane, specifically
+        // placing it in the center of the jframe's borderlayout
+        JFrame frame = new JFrame();
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // make it easy to close the application
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // set the frame size (you'll usually want to call frame.pack())
+        frame.setSize(new Dimension(400, 400));
+        
+        // center the frame
+        frame.setLocationRelativeTo(null);
+        
+        //initComponents(sb.split("\n"),textArea,frame);
+        frame.setVisible(true);
+        this.frame=frame;
+  }
 }
