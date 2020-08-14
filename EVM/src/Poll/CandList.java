@@ -3,45 +3,80 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import evm.Error;
+
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import Crypto.Decrypt;
 import Crypto.Encrypt;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collections;
 import javax.crypto.BadPaddingException;
+import javax.swing.JOptionPane;
 
 /**
- * A complete Java class to demonstrate the use of a JScrollPane.
- * 
- * @author robinhood
  *
+ * @author tapan
  */
-public class CandList extends javax.swing.JFrame 
-{
+public class CandList  extends javax.swing.JFrame 
+{       //public class
+    
     public String constituency="tkm";
     private int c,size=0;
-    public StringBuffer sb;
+    private StringBuffer sb;
     public String [] s;
     private String candidates[];
     public JTextArea textArea;
     public JFrame frame;
     ArrayList<javax.swing.JButton> cand; 
+    public static boolean flag=false;
+      
+    private void initComponents(String []sb)
+    {
+        cand= new ArrayList<javax.swing.JButton>();
+        for(String x:sb)
+        {
+            cand.add(new JButton(x));
+        }
         
+        //str[10]="NOTA";
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        int i=0;
+        for(JButton j:cand)
+        {
+            j.addActionListener(new java.awt.event.ActionListener() 
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt) 
+                {
+                    candActionPerformed(evt);
+                }
+            });
+            j.setBounds(100,100+i,100,100);
+            i+=100;
+            add(j);
+        }
+        setVisible(true);
+        setSize(400, 400);
+        setLayout(null);
+    }      
     public static void shuffle(String filename) throws IOException{
 		ArrayList<String> str = new ArrayList<String>();
 		BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -59,6 +94,7 @@ public class CandList extends javax.swing.JFrame
 			ow.write(str.get(i)+"\n");
 		ow.close();
 	}
+    
 	private void fileWrite(int vote)throws IllegalBlockSizeException, InvalidKeyException, 
                                 NoSuchPaddingException, BadPaddingException
 	{
@@ -69,13 +105,16 @@ public class CandList extends javax.swing.JFrame
 			fw.write(" "+constituency+"\n");
 			fw.close();
                         shuffle("files/votes.txt");
-			new Encrypt("files/votes.txt");
+			new Encrypt(new File("files/votes.txt"));
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
 			try{
 				fw=new FileWriter("files/votes.txt",true);
-				fw.write("Invalid "+constituency+"\n");
+                                if(flag)
+                                    fw.write("NOTA "+constituency+"\n");
+                                else
+                                    fw.write("Invalid "+constituency+"\n");
 				fw.close();
                                 shuffle("files/votes.txt");
 			}
@@ -98,12 +137,15 @@ public class CandList extends javax.swing.JFrame
             if(b==cand.get(i))
             {
                 System.out.println("hello"+b.getText());
+                if(b.getText().equals("NOTA")){
+                    flag=true;
+                }
                 try{
                 fileWrite(i);
                 }
                 catch(IllegalBlockSizeException|InvalidKeyException|NoSuchPaddingException|
                     BadPaddingException e){
-                System.out.println("crypto error");
+                new Error("crypto error");
             }
                 frame.dispose();
                 Vote v = new Vote();
@@ -111,10 +153,10 @@ public class CandList extends javax.swing.JFrame
             }
         }           
         
-    } 
-  public CandList(String constituency,String [] candidates,String sb)
-  {
-      
+    }                                      
+
+    public CandList(String constituency,String [] candidates,String sb) {
+
         try 
         {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) 
@@ -145,13 +187,13 @@ public class CandList extends javax.swing.JFrame
         //</editor-fold>
 
         /* Create and display the form */
-        this.constituency=constituency;
-        this.candidates=candidates;
-        //System.out.println(sb);
-        sb+="NOTA\n";
-        s=sb.split("\n");
-        
-        // create a jtextarea
+       
+    this.constituency=constituency;
+    this.candidates=candidates;
+    sb=sb+"NOTA\n";
+    s=sb.split("\n");
+    //System.out.println(sb);
+    
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(0, 0, 0, 0));
         JPanel layout = new JPanel(new GridBagLayout());
@@ -183,7 +225,7 @@ public class CandList extends javax.swing.JFrame
         layout.add(btnPanel);
         // add text to it; we want to make it scroll
         //textArea.setText("xx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\nxx\n");
-        
+
         // create a scrollpane, givin it the textarea as a constructor argument
         JScrollPane scrollPane = new JScrollPane(layout);
 
@@ -193,16 +235,31 @@ public class CandList extends javax.swing.JFrame
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         // make it easy to close the application
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent w){
+                int a = JOptionPane.showConfirmDialog(frame,"Are you sure ?");
+                if(a==JOptionPane.YES_OPTION){
+                    flag=false;
+                    try{
+                        fileWrite(cand.size()+1);
+                    }
+                    catch(IllegalBlockSizeException|InvalidKeyException|NoSuchPaddingException|
+                    BadPaddingException e){
+                new Error("crypto error");
+            }
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+            }
+        });
         // set the frame size (you'll usually want to call frame.pack())
         frame.setSize(new Dimension(400, 400));
-        
+
         // center the frame
         frame.setLocationRelativeTo(null);
-        
+
         //initComponents(sb.split("\n"),textArea,frame);
         frame.setVisible(true);
         this.frame=frame;
-  }
+    }
 }

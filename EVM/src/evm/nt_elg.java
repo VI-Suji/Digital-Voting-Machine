@@ -3,21 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package evm.Gui;
+package evm;
 
 import evm.admin;
-import evm.nt_elg;
 
 /**
  *
  * @author robinhood
  */
-public class val_cons extends javax.swing.JFrame {
+public class nt_elg extends javax.swing.JFrame {
 
     /**
-     * Creates new form val_cons
+     * Creates new form 
      */
-    public val_cons() {
+    public nt_elg() {
         initComponents();
     }
 
@@ -36,7 +35,7 @@ public class val_cons extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Not Eligible");
 
-        jLabel1.setText("<html><body align=\"center\"><font size=6>It is <font color=\"red\">NOT</font> a valid<br>constitution</font></body></html>");
+        jLabel1.setText("<html><body align=\"center\"><font size=6>You are <font color=\"red\">NOT</font> Eligible to<br>cast your vote</font></body></html>");
 
         jButton1.setText("Retry");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -49,21 +48,21 @@ public class val_cons extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(65, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(49, 49, 49))
             .addGroup(layout.createSequentialGroup()
                 .addGap(157, 157, 157)
                 .addComponent(jButton1)
-                .addContainerGap(194, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(105, 105, 105))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(33, 33, 33)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap(32, Short.MAX_VALUE))
         );
@@ -74,7 +73,7 @@ public class val_cons extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
             this.dispose();
             admin obj=new admin();
-            obj.setVisible(true);       // TODO add your handling code here:
+            obj.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

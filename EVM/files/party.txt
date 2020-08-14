@@ -4,7 +4,7 @@
 103 aap 0
 104 kjp 0
 106 new democrats 0
-2 CPIM 0
-3 cpi 0
-4 cpi 0
-5 conga 0
+6 peoples party 0
+7 democrats 0
+8 republicans 0
+9 seculars 0

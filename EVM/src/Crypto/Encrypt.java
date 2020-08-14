@@ -1,56 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Crypto;
-
-/**
- *
- * @author tapan
- */
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Encrypt {
-    public Encrypt(String inputFile) throws BadPaddingException,IllegalBlockSizeException,
+    public Encrypt(File inputFile) throws BadPaddingException,IllegalBlockSizeException,
     InvalidKeyException,NoSuchPaddingException{
         try {
             BufferedReader br = new BufferedReader(new FileReader(inputFile));
+            System.out.println(inputFile.getName());
             String line;
-            int count=0;
-            String[] s = inputFile.split(".txt");
+            StringBuffer content= new StringBuffer("");
             while((line=br.readLine())!=null){
-                Boolean status;
-                if(count==0)
-                    status=false;
-                else
-                    status=true;
-                String encryptedString = Base64.getEncoder().encodeToString(encrypt(line, publicKey));
-                try{
-                FileWriter fw = new FileWriter(s[0]+".encrypted",status);
-                fw.write(encryptedString);
-                fw.write("\n");
-                fw.close();
-                count++;
-                }
-                catch(IOException ie){
-                    System.out.println("error");
-                }
+                content.append(line+"\n");
             }
+            String encryptedString = Base64.getEncoder().encodeToString(encrypt(new String(content), publicKey));
+            FileWriter fw;
+            fw=new FileWriter(inputFile);
+            fw.write(encryptedString);
+            fw.close();
         } catch (NoSuchAlgorithmException|IOException e ) {
             System.err.println(e.getMessage());
         }

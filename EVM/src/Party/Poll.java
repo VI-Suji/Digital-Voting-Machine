@@ -3,9 +3,9 @@ package Party;
 import Poll.Valid;
 import evm.Trials;
 import evm.nt_elg;
-import evm.val_cons;
-import evm.voted;
-import evm.layout;
+//import evm.Gui.val_cons;
+//import evm.Gui.voted;
+//import evm.Gui.layout;
 
 import java.io.BufferedReader;
 import java.util.Scanner;
@@ -26,7 +26,7 @@ public class Poll {
 	private int candidateCount=0;
         public String voterID;
 
-	public Poll(String constituency, String vid)
+	public Poll(String constituency, String vid) throws IOException
 	{
 		this.constituency=constituency;
                 this.voterID=vid;

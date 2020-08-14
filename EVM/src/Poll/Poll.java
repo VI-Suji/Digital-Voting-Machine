@@ -2,9 +2,9 @@ package Poll;
 
 import evm.Error;
 import evm.nt_elg;
-import evm.val_cons;
-import evm.voted;
-import evm.layout;
+//import evm.Gui.val_cons;
+//import evm.Gui.voted;
+//import evm.Gui.layout;
 import Poll.Votes;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.lang.String;
 
 import Crypto.Decrypt;
 import Crypto.Encrypt;
+import java.io.File;
 
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -47,17 +48,17 @@ public class Poll {
             }
             catch(IllegalBlockSizeException|InvalidKeyException|NoSuchPaddingException|
                     BadPaddingException e){
-                System.out.println("crypto error");
+                new Error("crypto error");
             }
         }
 	
-	public Poll(String constituency)
+	public Poll(String constituency) 
 	{
 		this.constituency=constituency;
 		boolean valid = Valid.validCons(constituency);
 		if(!valid)
 		{
-			new Error("Invalid Constituency");
+			new Error("Invalid constituency!!!",true);
 			return;
 		}
 		System.out.println("Valid");
@@ -111,7 +112,7 @@ public class Poll {
 		String line;
                 System.out.println(c+" "+constituency+" "+voterID);
 		try{
-                        new Decrypt("files/voter.encrypted",privateKey);
+                        Decrypt.decrypt(new File("files/voter.encrypted"),privateKey);
 			br= new BufferedReader(new FileReader("files/voter.decrypted"));	//votes received
 			br2= new BufferedReader(new FileReader("files/polled.txt"));	//voters who already committed
 	
@@ -122,7 +123,7 @@ public class Poll {
 			{
 				if(line.equals(voterID))
 				{
-					new Error("Already Voted");		//invalid case
+					new Error("Already voted",true);		//invalid case
 					return false;
 				}
 			}
@@ -134,13 +135,13 @@ public class Poll {
 						break;
 					else
 					{
-						new Error("Constituency Mismatch");
+						new Error("Constituency mismatch",true);
 						return false;
 					}
 			}
 			if(line==null)
 			{
-				new Error("Voter NotFound");		//invalid case
+				new Error("Voter not found",true);			//invalid case
 				return false;
 			}
                         System.out.println(constituency+" "+candidates);

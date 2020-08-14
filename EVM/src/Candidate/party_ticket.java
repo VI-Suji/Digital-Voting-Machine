@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import Poll.Valid;
+import evm.Error;
 
 
 class IOn{
@@ -25,13 +26,13 @@ class IOn{
                }
            }  
            if(flag==0){
-           	 System.out.println("no matching record");
+           	 new Error("no matching record");
            	 return null;
            }
             
         }
         catch(IOException e){
-             System.out.println("error");
+             new Error("error");
              return null;
     	}
     	return null;
@@ -45,13 +46,39 @@ class CandidateEligibility extends Exception{
 }
 
 class Ticket {
-        public static String vid,cons,party,s = null;
-        public Ticket(String s,String id,String party,String con) throws IOException{
-            this.s=s;
+        public static String vid,cons,party = null;
+        public Ticket(String id,String party,String con) throws IOException{
+            //this.s=s;
             this.vid=id;
             this.party=party;
+            if(party==null || party.equals(""))
+                this.party="independent";
             this.cons=con;
             candi();
+        }
+        public static String getName(String id){
+            String str=null;
+            try{
+            BufferedReader br = new BufferedReader(new FileReader("files/voter.txt"));
+            String line;
+            while((line=br.readLine())!=null){
+                System.out.println(line.split(" ",5)[0]);
+                System.out.println(id);
+                if(line.split(" ",5)[0].equals(id)){
+                    //System.out.print("hello");
+                    str = line.split(" ",5)[1];
+                    break;
+                }
+
+            }
+            br.close();
+            }
+            catch(IOException |NullPointerException x){
+                new Error("No Matching name found");
+            }
+            if(str==null)
+                return null;
+            return str;
         }
 	public static void getDiff(GregorianCalendar a,GregorianCalendar b) throws CandidateEligibility{
         int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
@@ -70,12 +97,13 @@ class Ticket {
                 String line ;
                 while((line=br.readLine())!=null){
                     String name = line.split(" ",3)[1];
-                    if(pname.equals(name)) //registered party 
+                    System.out.print(pname);
+                    if(pname.equals(name) || pname.equals("independent")) //registered party 
                         return true;
                 }
             }
             catch(IOException e){
-                System.out.println("error processing");
+                new Error("error processing");
             }
             return false;
         }
@@ -86,9 +114,9 @@ class Ticket {
 			GregorianCalendar g;
 			while(count<1){
 				//data should be read from aadhar database
-        
+                                //System.out.print("value:"+party);
                                 if(!isValidParty(party)){
-                                    System.out.println("unregistered party,\n application rejected");
+                                    new Error("unregistered party,\n application rejected");
                                     count++;
                                     continue;
                                 }
@@ -99,7 +127,7 @@ class Ticket {
                                      
 			         }
 			      catch(NullPointerException np){
-                      System.out.println("No voter ID! Ineligible to apply");
+                      new Error("No voter ID! Ineligible to apply");
                       count++;
                       continue;
 			    }
@@ -107,12 +135,12 @@ class Ticket {
                 getDiff(g,new GregorianCalendar());
                 }
                 catch(CandidateEligibility e){
-                      System.out.println(e.getMessage());
+                      new Error(e.getMessage());
                       count++;
                       continue;
                 }
                 catch(NumberFormatException ne){
-                  System.out.println("error");
+                  new Error("error");
                   count++;
                   continue;
                 }
@@ -127,8 +155,15 @@ class Ticket {
                     System.out.println("file not found error");
                 }
                 */
+                String str=null;
+                try{
+                str = getName(vid);
+                }
+                catch(NullPointerException y){
+                    new Error("No matching record");
+                }
                 String[] strArray = new String[]{String.valueOf(vid).toLowerCase(),cons.toLowerCase(),
-                                                       party.toLowerCase(),s.toLowerCase()};
+                                                       party.toLowerCase(),str.toLowerCase()};
                 System.out.println(strArray[0]);
                 System.out.println(strArray[1]);
                 System.out.println(strArray[2]);
@@ -136,19 +171,19 @@ class Ticket {
                 int validity = Validity.valid(strArray);
                 if(validity==1 && Valid.validCons(cons)){
                 Candidate cd = new Candidate(vid,cons,party);
-				String output = cd.vid()+ " " + s + " " + cons + " " + party ;
+				String output = cd.vid()+ " " + str + " " + cons + " " + party ;
 				out.write(output);
 				out.write("\n");
-			
+                                Error.display("Candidate added");
 			}
                 else{
-                    System.out.println("invalid registration");
+                    new Error("invalid registration");
                 }
                 ++count;
                         }
 		}
 		catch(IOException e){
-			System.out.println("The system has detected some failure!");
+			new Error("The system has detected some failure!");
 		}
 		
 	}

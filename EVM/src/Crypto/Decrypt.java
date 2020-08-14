@@ -1,15 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Crypto;
-
-/**
- *
- * @author tapan
- */
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -20,41 +9,28 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.StringBuffer;
 
 public class Decrypt {
-     public Decrypt(String inputFile,String privateKey)throws IllegalBlockSizeException, InvalidKeyException, 
+     public static String decrypt(File inputFile,String privateKey)throws IllegalBlockSizeException, InvalidKeyException, 
                                 NoSuchPaddingException, BadPaddingException{
-        String s[] = inputFile.split(".encrypted");
+        String content;
+        String decryptedString="";
          try {
-            BufferedReader br = new BufferedReader(new FileReader(s[0]+".encrypted"));
-            String line;
-            int count=0;
-            Boolean status;
-            while((line=br.readLine())!=null){
-                String decryptedString = Decrypt.decrypt(line, privateKey);
-                try{
-                    status = count != 0;
-                FileWriter fw = new FileWriter(s[0]+".decrypted",status);
-                fw.write(decryptedString);
-                fw.write("\n");
-                fw.close();
-                count++;
-                }
-                catch(IOException ie){
-                    System.out.println("error");
-                }
-            }
-            
+            BufferedReader br = new BufferedReader(new FileReader(inputFile));
+            content=br.readLine();
+            br.close();
+            decryptedString = Decrypt.decrypt(content, privateKey);
 
-            //String decryptedString = RSAUtil.decrypt(encryptedString, privateKey);
-            //System.out.println(decryptedString);
         } catch (NoSuchAlgorithmException|IOException e ) {
             System.err.println(e.getMessage());
         }
 
+        return decryptedString;
     }
    
     
